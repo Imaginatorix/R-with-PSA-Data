@@ -1,11 +1,8 @@
 library(readxl)
 library(ggplot2)
 library(dplyr)
-library(sp)
 library(sf)
-library(raster)
 library(geodata)
-library(broom)
 
 # https://www.youtube.com/watch?v=Qbkx3LCguyg
 # Load in Data
