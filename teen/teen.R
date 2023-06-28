@@ -41,6 +41,7 @@ small_legend <- theme(legend.key.size = unit(0.25, 'cm'),
                       legend.title = element_text(size=7),
                       legend.text = element_text(size=5))
 
+# How are teen pregnancies affected by isolation caused by the COVID-19 pandemic?
 
 # Overall
 ggplot(data=teen_data,

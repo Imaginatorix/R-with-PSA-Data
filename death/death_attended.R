@@ -13,6 +13,10 @@ site_death <- read_excel("death/death_data.xlsx",
 colnames(site_death) <- col_names
 site_death <- filter(site_death, !is.na(site_death$area_name))
 
+# Include total
+site_death <- site_death %>%
+  mutate(total=health_facilities+home+others+not_stated)
+
 # Get geographic data
 for (i in 1:3){
   gadm(country="PHL", path="./death/geo/", level=i)
@@ -36,38 +40,33 @@ names(geo_data_level_3_df)[names(geo_data_level_3_df) == "NAME_3"] <- "area_name
 # This assumes that if there is a larger unit in the column, then no smaller unit it contains will also contain in that column
 # (i.e. If Province Abra is in the column, then Municipality Bangued can't be in the column,
 # however, Municipality Buenavista is allowed is it is not in Abra)
-
-
 merge_df <- function(df1, df2, name){
+  # Only work on="geometry"
   # Merge the data
   df3 <- left_join(df1, df2, by=name, multiple="any")
   # Merge the columns
   common <- intersect(names(df1), names(df2))
   if (length(common) > 1){
-    # I HAVE NO IDEA
     # https://r-spatial.org/r/2017/03/19/invalid.html
-    overwrite <- filter(df3, !st_is_empty(geometry.y))
-    # Insert non-empty rows
-    # https://stackoverflow.com/questions/30912136/replace-rows-in-one-data-frame-if-they-appear-in-another-data-frame
-    df3[match(df2$area_name, df1$area_name),] <- overwrite
+    # for st_is_empty
+    df3 <- df3 %>%
+      mutate(geometry=if_else(!st_is_empty(geometry.y), geometry.y, geometry.x)) %>% 
+      select(-starts_with("geometry."))
   }
-
   return (df3)
 }
 
-a <- site_death
 # Start with smaller so that it would be replaced by something more popular/bigger/most likely to be unique
-test <- merge_df(a, select(geo_data_level_3_df, area_name, geometry), name="area_name") %>% 
-        merge_df(select(geo_data_level_2_df, area_name, geometry), name="area_name")
-
-test
-
-test <- sample(1:100, nrow(geo_data_level_1_df), replace=TRUE)
-geo_data_level_1_df$test <- test
-
-ggplot(select(geo_data_level_1_df, geometry)) +
-  geom_sf(aes(fill=test), color="black")
+site_death_map <- site_death %>%
+  merge_df(select(geo_data_level_3_df, area_name, geometry), name="area_name") %>%
+  merge_df(select(geo_data_level_2_df, area_name, geometry), name="area_name") %>%
+  merge_df(select(geo_data_level_1_df, area_name, geometry), name="area_name")
+# I know there are still some values that were actually included in the gadm data
+# But were not included in the site_death_map
+# For _now_, let's just continue with it
 
 
 
-
+# Difference in number of deaths in attended vs not attended?
+# Compare death difference each profession that attended
+# Can you find anomalies on the deaths by attention per region?
