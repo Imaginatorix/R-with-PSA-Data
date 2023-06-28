@@ -12,10 +12,12 @@ site_death <- read_excel("death/death_data.xlsx",
                          na = "-")
 colnames(site_death) <- col_names
 site_death <- filter(site_death, !is.na(site_death$area_name))
-
 # Include total
 site_death <- site_death %>%
                 mutate(total=health_facilities+home+others+not_stated)
+# Reformat the city names
+site_death$area_name <- gsub("^City of (.*)", "\\1 City", site_death$area_name)
+
 
 # Get geographic data
 for (i in 1:3){
