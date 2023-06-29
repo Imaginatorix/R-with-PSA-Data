@@ -1,4 +1,6 @@
 library(readxl)
+library(ggplot2)
+library(dplyr)
 
 # Load data for productivity
 productivity <- as.data.frame(t(read_excel("productivityVSemployment/productivity/productivity.xlsx", 
@@ -29,22 +31,28 @@ df <- df %>%
 # Linear model for workforce population against labor productivity
 ggplot(df, aes(x=workforce, y=productivity)) +
   geom_point() +
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE) +
+  labs(title=paste("Correlation Coefficient:", cor(df$workforce, df$productivity)))
 
 # Linear model for employment population against labor productivity
 ggplot(df, aes(x=pop_e, y=productivity)) +
   geom_point() +
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE) +
+  labs(title=paste("Correlation Coefficient:", cor(df$pop_e, df$productivity)))
 
 # Linear model for unemployment population against labor productivity
 ggplot(df, aes(x=pop_une, y=productivity)) +
   geom_point() +
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE) +
+  labs(title=paste("Correlation Coefficient:", cor(df$pop_une, df$productivity)))
+
 
 # Linear model for underemployment population against labor productivity
 ggplot(df, aes(x=pop_undere, y=productivity)) +
   geom_point() +
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE) +
+  labs(title=paste("Correlation Coefficient:", cor(df$pop_undere, df$productivity)))
+
 
 
 
