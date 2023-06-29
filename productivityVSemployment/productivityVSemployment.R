@@ -27,31 +27,43 @@ df <- df %>%
         mutate(pop_undere=workforce*underemployment/100)
 
 # Is there a correlation between the employment status of the workers and the labor productivity?
+# NOTE: Based on https://towardsdatascience.com/eveything-you-need-to-know-about-interpreting-correlations-2c485841c0b8
 
 # Linear model for workforce population against labor productivity
+test <- cor.test(df$workforce, df$productivity)
 ggplot(df, aes(x=workforce, y=productivity)) +
   geom_point() +
   geom_smooth(method="lm", se=FALSE) +
-  labs(title=paste("Correlation Coefficient:", cor(df$workforce, df$productivity)))
+  labs(title=paste("Correlation Coefficient:", test$estimate),
+       subtitle=paste("p-value:", test$p.value)) +
+  xlab("Workforce Population")
 
 # Linear model for employment population against labor productivity
+test <- cor.test(df$pop_e, df$productivity)
 ggplot(df, aes(x=pop_e, y=productivity)) +
   geom_point() +
   geom_smooth(method="lm", se=FALSE) +
-  labs(title=paste("Correlation Coefficient:", cor(df$pop_e, df$productivity)))
+  labs(title=paste("Correlation Coefficient:", test$estimate),
+       subtitle=paste("p-value:", test$p.value)) +
+  xlab("Employment Population")
 
 # Linear model for unemployment population against labor productivity
+test <- cor.test(df$pop_une, df$productivity)
 ggplot(df, aes(x=pop_une, y=productivity)) +
   geom_point() +
   geom_smooth(method="lm", se=FALSE) +
-  labs(title=paste("Correlation Coefficient:", cor(df$pop_une, df$productivity)))
-
+  labs(title=paste("Correlation Coefficient:", test$estimate),
+       subtitle=paste("p-value:", test$p.value)) +
+  xlab("Unemployment Population")
 
 # Linear model for underemployment population against labor productivity
+test <- cor.test(df$pop_undere, df$productivity)
 ggplot(df, aes(x=pop_undere, y=productivity)) +
   geom_point() +
   geom_smooth(method="lm", se=FALSE) +
-  labs(title=paste("Correlation Coefficient:", cor(df$pop_undere, df$productivity)))
+  labs(title=paste("Correlation Coefficient:", test$estimate),
+       subtitle=paste("p-value:", test$p.value)) +
+  xlab("Underemployment Population")
 
 
 
